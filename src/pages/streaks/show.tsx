@@ -13,15 +13,15 @@ import {
     RefreshButton,
 } from "@pankod/refine-antd";
 
-import { IPost, ICategory } from "interfaces";
+import { IStreak } from "interfaces";
 import { useState } from "react";
 
 const { Title, Text } = Typography;
 
-export const PostShow: React.FC<IResourceComponentsProps> = () => {
+export const StreakShow: React.FC<IResourceComponentsProps> = () => {
     const [isDeprecated, setIsDeprecated] = useState(false);
 
-    const { queryResult } = useShow<IPost>({
+    const { queryResult } = useShow<IStreak>({
         liveMode: "manual",
         onLiveEvent: () => {
             setIsDeprecated(true);
@@ -31,14 +31,6 @@ export const PostShow: React.FC<IResourceComponentsProps> = () => {
     const { data, isLoading } = queryResult;
     const record = data?.data;
 
-    const { data: categoryData, isLoading: categoryIsLoading } =
-        useOne<ICategory>({
-            resource: "categories",
-            id: record?.categoryId || "",
-            queryOptions: {
-                enabled: !!record,
-            },
-        });
 
     const handleRefresh = () => {
         queryResult.refetch();
@@ -60,7 +52,7 @@ export const PostShow: React.FC<IResourceComponentsProps> = () => {
         >
             {isDeprecated && (
                 <Alert
-                    message="This post is changed. Reload to see it's latest version."
+                    message="This streak has changed. Reload to see it's latest version."
                     type="warning"
                     style={{
                         marginBottom: 20,
@@ -80,32 +72,12 @@ export const PostShow: React.FC<IResourceComponentsProps> = () => {
             <Title level={5}>Id</Title>
             <Text>{record?.id}</Text>
 
-            <Title level={5}>Title</Title>
-            <Text>{record?.title}</Text>
+            <Title level={5}>Name</Title>
+            <Text>{record?.name}</Text>
 
-            <Title level={5}>Category</Title>
-            <Text>
-                {categoryIsLoading ? "Loading..." : categoryData?.data.title}
-            </Text>
+            <Title level={5}>Word</Title>
+            <Text>{record?.word}</Text>
 
-            <Title level={5}>Content</Title>
-            <MarkdownField value={record?.content} />
-
-            <Title level={5}>Images</Title>
-            <Space wrap>
-                {record?.images ? (
-                    record?.images.map((img) => (
-                        <ImageField
-                            key={img.name}
-                            value={img.url}
-                            title={img.name}
-                            width={200}
-                        />
-                    ))
-                ) : (
-                    <Text>Not found any images</Text>
-                )}
-            </Space>
         </Show>
     );
 };

@@ -12,7 +12,7 @@ import { GoogleOutlined } from "@ant-design/icons";
 
 import "@pankod/refine-antd/dist/reset.css";
 
-import { PostList, PostCreate, PostEdit, PostShow } from "pages/posts";
+import { StreakList, StreakCreate, StreakEdit, StreakShow } from "pages/streaks";
 import { supabaseClient } from "utility";
 
 const authProvider: AuthProvider = {
@@ -119,6 +119,7 @@ const authProvider: AuthProvider = {
 };
 
 const App: React.FC = () => {
+    
     return (
         <Refine
             dataProvider={dataProvider(supabaseClient)}
@@ -157,19 +158,19 @@ const App: React.FC = () => {
                     ]}
                     formProps={{
                         initialValues: {
-                            email: "info@refine.dev",
-                            password: "refine-supabase",
+                            email: "",
+                            password: "",
                         },
                     }}
                 />
             )}
             resources={[
                 {
-                    name: "posts",
-                    list: PostList,
-                    create: PostCreate,
-                    edit: PostEdit,
-                    show: PostShow,
+                    name: "streaks",
+                    list: StreakList,
+                    create: StreakCreate,
+                    edit: StreakEdit,
+                    show: StreakShow
                 },
             ]}
             options={{ liveMode: "auto" }}

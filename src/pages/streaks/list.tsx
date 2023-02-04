@@ -13,24 +13,21 @@ import {
     useSelect,
 } from "@pankod/refine-antd";
 
-import { IPost, ICategory } from "interfaces";
+import { IStreak } from "interfaces";
 
-export const PostList: React.FC<IResourceComponentsProps> = () => {
-    const { tableProps, sorter } = useTable<IPost>({
+export const StreakList: React.FC<IResourceComponentsProps> = () => {
+    const { tableProps, sorter } = useTable<IStreak>({
         initialSorter: [
             {
-                field: "id",
+                field: "word",
                 order: "asc",
             },
         ],
         metaData: {
-            select: "*, categories(title)",
+            select: "*",
         },
     });
 
-    const { selectProps } = useSelect<ICategory>({
-        resource: "categories",
-    });
 
     return (
         <List>
@@ -43,31 +40,18 @@ export const PostList: React.FC<IResourceComponentsProps> = () => {
                     defaultSortOrder={getDefaultSortOrder("id", sorter)}
                 />
                 <Table.Column
-                    key="title"
-                    dataIndex="title"
-                    title="Title"
+                    key="name"
+                    dataIndex="name"
+                    title="Name"
                     sorter
                 />
                 <Table.Column
-                    key="categoryId"
-                    dataIndex={["categories", "title"]}
-                    title="Category"
-                    defaultSortOrder={getDefaultSortOrder(
-                        "categories.title",
-                        sorter,
-                    )}
-                    filterDropdown={(props) => (
-                        <FilterDropdown {...props}>
-                            <Select
-                                style={{ minWidth: 200 }}
-                                mode="multiple"
-                                placeholder="Select Category"
-                                {...selectProps}
-                            />
-                        </FilterDropdown>
-                    )}
+                    key="word"
+                    dataIndex="word"
+                    title="Word"
+                    sorter
                 />
-                <Table.Column<IPost>
+                <Table.Column<IStreak>
                     title="Actions"
                     dataIndex="actions"
                     render={(_, record) => (

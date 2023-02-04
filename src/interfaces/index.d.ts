@@ -1,7 +1,4 @@
-export interface ICategory {
-    id: string;
-    title: string;
-}
+
 
 export interface IFile {
     name: string;
@@ -13,10 +10,9 @@ export interface IFile {
     url: string;
 }
 
-export interface IPost {
+export interface IStreak {
     id: string;
-    title: string;
-    content: string;
-    categoryId: string;
-    images: IFile[];
+    name: string;
+    word: string;
+    user_id: string;
 }
