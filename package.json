@@ -1,6 +1,6 @@
 {
-    "name": "data-provider-supabase",
-    "version": "3.25.0",
+    "name": "dashed-streaks",
+    "version": "0.1.0",
     "private": true,
     "dependencies": {
         "@pankod/refine-antd": "^4.7.1",
