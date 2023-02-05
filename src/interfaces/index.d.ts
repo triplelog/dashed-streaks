@@ -14,5 +14,13 @@ export interface IStreak {
     id: string;
     name: string;
     word: string;
-    user_id: string;
+    type: string;
+    onoff: string;
+    morse: string;
+    dot: string;
+    dash: string;
+    start: timestamp;
+    is_active: bool;
+
 }
+

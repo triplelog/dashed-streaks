@@ -32,13 +32,7 @@ export const StreakList: React.FC<IResourceComponentsProps> = () => {
     return (
         <List>
             <Table {...tableProps} rowKey="id">
-                <Table.Column
-                    key="id"
-                    dataIndex="id"
-                    title="ID"
-                    sorter
-                    defaultSortOrder={getDefaultSortOrder("id", sorter)}
-                />
+                
                 <Table.Column
                     key="name"
                     dataIndex="name"
