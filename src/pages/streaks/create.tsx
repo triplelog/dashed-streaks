@@ -16,7 +16,7 @@ import {
 import MDEditor from "@uiw/react-md-editor";
 
 import { supabaseClient } from "utility";
-import { morseConverter } from "utility/morse";
+import { createMorse, fromMorse } from "utility/morse";
 
 export const StreakCreate: React.FC<IResourceComponentsProps> = (  ) => {
     const { formProps, saveButtonProps, onFinish } = useForm();
@@ -30,7 +30,7 @@ export const StreakCreate: React.FC<IResourceComponentsProps> = (  ) => {
     
 
     const handleOnFinish = (values: any) => {
-        const morse = morseConverter(values.word);
+        const morse = createMorse(values.word);
         onFinish({
             morse: morse,
             name: `${values.name}`,
