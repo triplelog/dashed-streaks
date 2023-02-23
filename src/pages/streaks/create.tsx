@@ -7,11 +7,16 @@ import {
     Input,
     Select,
     Radio,
+    Checkbox,
+    DatePicker,
+    TimePicker,
     Upload,
     useForm,
     useSelect,
     RcFile,
 } from "@pankod/refine-antd";
+
+
 
 import MDEditor from "@uiw/react-md-editor";
 
@@ -20,26 +25,57 @@ import { createMorse, fromMorse } from "utility/morse";
 
 export const StreakCreate: React.FC<IResourceComponentsProps> = (  ) => {
     const { formProps, saveButtonProps, onFinish } = useForm();
-    
-    const [values, setValues] = useState({
-        start: 'test',
-    });
-    const changeType = (value: string) => {
-        setValues({start: value});
+    const [schedule, setSchedule] = useState([true,true,true,true,true,true,true]);
+    const onCBChg = (event: any) => {
+        schedule[parseInt(event.target.value)]=event.target.checked;
+        setSchedule(schedule);
     }
+    const dailyOptions = [
+        { label: 'Sunday', value: '0', checked:schedule[0], onChange:onCBChg},
+        { label: 'Monday', value: '1', checked:schedule[1], onChange:onCBChg },
+        { label: 'Tuesday', value: '2', checked:schedule[2], onChange:onCBChg },
+        { label: 'Wednesday', value: '3', checked:schedule[3], onChange:onCBChg },
+        { label: 'Thursday', value: '4', checked:schedule[4], onChange:onCBChg },
+        { label: 'Friday', value: '5', checked:schedule[5], onChange:onCBChg },
+        { label: 'Saturday', value: '6', checked:schedule[6], onChange:onCBChg },
+    ];
     
+    const [timeType, setType] = useState("day");
+    const [start, setStart] = useState(new Date());
+    const [scheduleOptions, setSO] = useState(dailyOptions);
+    const changeType = (value: string) => {
+        if (value == "day"){
+            setSO(dailyOptions);
+        }
+        setType(value);
+        //setValues({start: value});
+    }
+    const changeDate = (value: any) => {
+        var newDate = new Date(value);
+        setStart(newDate);
+    };
 
     const handleOnFinish = (values: any) => {
         const morse = createMorse(values.word);
+        console.log(values);
+        console.log(start);
+        let onoff = "1";
+        if (timeType == "day"){
+            onoff = "";
+            for (var i=0;i<7;i++){
+                if (schedule[i]){onoff += "1";}
+                else {onoff += "0";}
+            }
+        }
         onFinish({
             morse: morse,
             name: `${values.name}`,
             word: `${values.word}`,
-            type: `${values.type}`,
-            onoff: `${values.onoff}`,
+            type: `${timeType}`,
+            onoff: onoff,
             dot: `${values.dot}`,
             dash: `${values.dash}`,
-            start: new Date().toUTCString(),
+            start: `${start.toISOString()}`,
         });
     };
 
@@ -63,7 +99,7 @@ export const StreakCreate: React.FC<IResourceComponentsProps> = (  ) => {
                     <Input />
                 </Form.Item>
                 <Form.Item
-                    label="Time per Task"
+                    label="Frequency"
                 >
                     <Radio.Group 
                         name="type"
@@ -72,18 +108,20 @@ export const StreakCreate: React.FC<IResourceComponentsProps> = (  ) => {
                         defaultValue="day"
                         onChange={(event) => {changeType(event.target.value)}}
                     >
-                        <Radio value="hour" >Hour</Radio>
                         <Radio value="day" >Day</Radio>
                         <Radio value="week" >Week</Radio>
                         <Radio value="month" >Month</Radio>
                     </Radio.Group>
                 </Form.Item>
+                { timeType == "day" && (
                 <Form.Item
                     label="Schedule"
-                    name="onoff"
                 >
-                    <Input />
+                    <Checkbox.Group options={scheduleOptions} defaultValue={['0','1','2','3','4','5','6','7','8']} />
+                    
+                    
                 </Form.Item>
+                )}
                 <Form.Item
                     label="Dot Task"
                     name="dot"
@@ -103,10 +141,9 @@ export const StreakCreate: React.FC<IResourceComponentsProps> = (  ) => {
                     <Input />
                 </Form.Item>
                 <Form.Item
-                    label="Start Time"
-                    
+                    label="Start Date"
                 >
-                    <Input name="start" value={values.start} />
+                    <DatePicker onChange={(event) => {changeDate(event)}} />
                 </Form.Item>
                 
                 

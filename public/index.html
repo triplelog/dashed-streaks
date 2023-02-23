@@ -25,6 +25,24 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>refine supabase example</title>
+    <style>
+      .ant-checkbox-group {
+        display: flex;
+        flex-direction: column;
+      }
+      .ant-checkbox-group :where(.css-ixblex).ant-checkbox-wrapper+.ant-checkbox-wrapper {
+        margin-inline-start: 0px;
+      }
+      .showRow {
+        border-top: 1px dashed #444;
+      }
+      .showRow:nth-of-type(1) {
+        border-top: 0px solid black;
+      }
+      .ant-divider + .showRow {
+        border-top: 0px solid black;
+      }
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

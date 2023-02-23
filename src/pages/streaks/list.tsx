@@ -42,7 +42,25 @@ export const StreakList: React.FC<IResourceComponentsProps> = () => {
                 <Table.Column
                     key="word"
                     dataIndex="word"
-                    title="Word"
+                    title="Goal Phrase"
+                    sorter
+                />
+                <Table.Column
+                    key="progressphrase"
+                    dataIndex="progressphrase"
+                    title="Progress"
+                    sorter
+                />
+                <Table.Column
+                    key="dot"
+                    dataIndex="dot"
+                    title="Dot Task"
+                    sorter
+                />
+                <Table.Column
+                    key="dash"
+                    dataIndex="dash"
+                    title="Dash Task"
                     sorter
                 />
                 <Table.Column<IStreak>

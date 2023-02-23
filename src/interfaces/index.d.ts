@@ -11,6 +11,8 @@ export interface IFile {
 }
 
 export interface IStreak {
+    progress: string;
+    progressphrase: string;
     id: string;
     name: string;
     word: string;

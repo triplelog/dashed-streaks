@@ -100,3 +100,37 @@ export const fromMorse = function(input: number[]){
 	output = output.replace(/[ ]{2,}/g," ");
 	return output;
 }
+export const fromMorseProgress = function(morse: number[],progress: boolean[]){
+	let pidx = 0;
+	let midx = 0;
+	let output = [];
+	for (var i=0,len=morse.length;i<len;i++){
+		if (morse[i] == 0){
+			output.push(0);
+		}
+		else if (morse[i] == 1){
+			if (pidx < progress.length && progress[pidx]){
+				output.push(1);
+			}
+			else {
+				output.push(0);
+			}
+			pidx++;
+		}
+		else if (morse[i] == 2){
+			let m = 0;
+			if (pidx < progress.length && progress[pidx]){
+				m++;
+			}
+			pidx++;
+			if (pidx < progress.length && progress[pidx]){
+				m++;
+			}
+			pidx++;
+			output.push(m);
+		}
+		
+	}
+	return fromMorse(output);
+	
+}
