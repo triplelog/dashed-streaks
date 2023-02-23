@@ -8,11 +8,14 @@ import {
 } from "@pankod/refine-antd";
 import { dataProvider, liveProvider } from "@pankod/refine-supabase";
 import routerProvider from "@pankod/refine-react-router-v6";
-import { GoogleOutlined } from "@ant-design/icons";
+
+const { Link } = routerProvider;
+import { GoogleOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 
 import "@pankod/refine-antd/dist/reset.css";
 
 import { StreakList, StreakCreate, StreakEdit, StreakShow } from "pages/streaks";
+import { About } from "pages/about";
 import { supabaseClient } from "utility";
 
 const authProvider: AuthProvider = {
@@ -146,15 +149,7 @@ const App: React.FC = () => {
                 <AuthPage
                     type="login"
                     providers={[
-                        {
-                            name: "google",
-                            label: "Sign in with Google",
-                            icon: (
-                                <GoogleOutlined
-                                    style={{ fontSize: 18, lineHeight: 0 }}
-                                />
-                            ),
-                        },
+                        
                     ]}
                     formProps={{
                         initialValues: {
@@ -166,6 +161,12 @@ const App: React.FC = () => {
             )}
             resources={[
                 {
+                    name: "about",
+                    icon: <QuestionCircleOutlined />,
+                    options: { label: "About" },
+                    list: About
+                },
+                {
                     name: "streaks",
                     list: StreakList,
                     create: StreakCreate,
@@ -176,6 +177,11 @@ const App: React.FC = () => {
             options={{ liveMode: "auto" }}
             notificationProvider={notificationProvider}
             Layout={Layout}
+            Title={() => (
+                <Link to="/" style={{ float: "left", marginRight: "10px", minHeight: "64px", paddingTop: "8px", paddingLeft: "8px" }}>
+                    <img src="/logo.png" alt="Dashed Streaks Logo" className="logoImage" />
+                </Link>
+            )}
             catchAll={<ErrorComponent />}
         />
     );
