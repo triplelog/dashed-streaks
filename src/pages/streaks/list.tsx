@@ -5,24 +5,34 @@ import {
     Table,
     useTable,
     Space,
+    DeleteButton,
     EditButton,
     ShowButton,
     getDefaultSortOrder,
     FilterDropdown,
+    Checkbox,
+    Typography,
     Select,
     useSelect,
 } from "@pankod/refine-antd";
-
+const { Title, Text } = Typography;
 import { IStreak } from "interfaces";
 
 export const StreakList: React.FC<IResourceComponentsProps> = () => {
     const { tableProps, sorter } = useTable<IStreak>({
         initialSorter: [
             {
-                field: "word",
-                order: "asc",
+                field: "start",
+                order: "desc",
             },
         ],
+       /* initialFilter: [
+            {
+                field: "type",
+                operator: "eq",
+                value: "day",
+            },
+        ],*/
         metaData: {
             select: "*",
         },
@@ -30,14 +40,28 @@ export const StreakList: React.FC<IResourceComponentsProps> = () => {
 
 
     return (
+        
         <List>
             <Table {...tableProps} rowKey="id">
-                
                 <Table.Column
-                    key="name"
-                    dataIndex="name"
-                    title="Name"
+                    key="type"
+                    dataIndex="type"
+                    title="Freq."
+                    render={(value) => {
+                        if (value == "day"){return <Text>Daily</Text>}
+                        else if (value == "week"){return <Text>Weekly</Text>}
+                        else {return <Text>Monthly</Text>}
+                    }}
                     sorter
+                    filterDropdown={(props) => (
+                        <FilterDropdown {...props}>
+                            <Checkbox.Group>
+                                <Checkbox value="day" defaultChecked={true}>Daily</Checkbox>
+                                <Checkbox value="week" defaultChecked={true}>Weekly</Checkbox>
+                                <Checkbox value="month" defaultChecked={true}>Monthly</Checkbox>
+                            </Checkbox.Group>
+                        </FilterDropdown>
+                    )}
                 />
                 <Table.Column
                     key="word"
@@ -52,15 +76,9 @@ export const StreakList: React.FC<IResourceComponentsProps> = () => {
                     sorter
                 />
                 <Table.Column
-                    key="dot"
-                    dataIndex="dot"
-                    title="Dot Task"
-                    sorter
-                />
-                <Table.Column
-                    key="dash"
-                    dataIndex="dash"
-                    title="Dash Task"
+                    key="name"
+                    dataIndex="name"
+                    title="Description"
                     sorter
                 />
                 <Table.Column<IStreak>
@@ -68,6 +86,11 @@ export const StreakList: React.FC<IResourceComponentsProps> = () => {
                     dataIndex="actions"
                     render={(_, record) => (
                         <Space>
+                            <DeleteButton
+                                hideText
+                                size="small"
+                                recordItemId={record.id}
+                            />
                             <EditButton
                                 hideText
                                 size="small"
@@ -82,6 +105,8 @@ export const StreakList: React.FC<IResourceComponentsProps> = () => {
                     )}
                 />
             </Table>
+            
         </List>
+        
     );
 };

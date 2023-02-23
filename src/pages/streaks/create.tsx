@@ -56,7 +56,12 @@ export const StreakCreate: React.FC<IResourceComponentsProps> = (  ) => {
     };
 
     const handleOnFinish = (values: any) => {
-        const morse = createMorse(values.word);
+        const morse: number[] = createMorse(values.word);
+        let progress = [];
+        for (var i=0,len=morse.length;i<len;i++){
+            if (morse[i]==2){progress.push(false)}
+            if (morse[i]>=1){progress.push(false)}
+        }
         console.log(values);
         console.log(start);
         let onoff = "1";
@@ -75,7 +80,10 @@ export const StreakCreate: React.FC<IResourceComponentsProps> = (  ) => {
             onoff: onoff,
             dot: `${values.dot}`,
             dash: `${values.dash}`,
+            progress: progress,
+            progressphrase: "",
             start: `${start.toISOString()}`,
+            
         });
     };
 

@@ -63,7 +63,7 @@ export const createMorse = function(input: string){
 		if (characters[lower[i]]){
 			morse = morse.concat(characters[lower[i]]);
 		}
-		if (i<lower.length-1){
+		if (i<lower.length-1 && morse.length > 0 && morse[morse.length-1] != 0){
 			morse.push(0);
 		}
 	}
@@ -100,11 +100,20 @@ export const fromMorse = function(input: number[]){
 	output = output.replace(/[ ]{2,}/g," ");
 	return output;
 }
-export const fromMorseProgress = function(morse: number[],progress: boolean[]){
+export const fromMorseProgress = function(morse: number[],progress: boolean[],maxmorse: number,word: string){
 	let pidx = 0;
-	let midx = 0;
 	let output = [];
-	for (var i=0,len=morse.length;i<len;i++){
+	let mlen = morse.length;
+	if (maxmorse < morse.length && maxmorse >= 0){
+		mlen = 0;
+		for (var i=maxmorse;i>=0;i--){
+			if (morse[i] == 0){
+				mlen = i+1;
+				break;
+			}
+		}
+	}
+	for (var i=0;i<mlen;i++){
 		if (morse[i] == 0){
 			output.push(0);
 		}
@@ -131,6 +140,20 @@ export const fromMorseProgress = function(morse: number[],progress: boolean[]){
 		}
 		
 	}
-	return fromMorse(output);
+	let lowerWord = fromMorse(output);
+	let out = "";
+	for (var i=0;i<Math.min(word.length,lowerWord.length);i++){
+		let char = word[i];
+		if (char !== char.toLowerCase() && char === char.toUpperCase()){
+			out += lowerWord[i].toUpperCase();
+		}
+		else {
+			out += lowerWord[i];
+		}
+	}
+	for (var i=word.length;i<lowerWord.length;i++){
+		out += lowerWord[i];
+	}
+	return out;
 	
 }

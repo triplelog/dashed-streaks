@@ -27,6 +27,9 @@ const { Title, Text } = Typography;
 
 export const StreakShow: React.FC<IResourceComponentsProps> = () => {
     const [isDeprecated, setIsDeprecated] = useState(false);
+    let pp: any = {};
+    const [progressChanges, setProgressChanges] = useState(pp);
+    let maxmorse = -1;
 
     const { queryResult } = useShow<IStreak>({
         liveMode: "manual",
@@ -41,23 +44,18 @@ export const StreakShow: React.FC<IResourceComponentsProps> = () => {
     const record = data?.data;
     const [yesterday,setYesterday] = useState(record?.word);
     const [yesterdayTasks,setYesterdayTasks] = useState(0);
-    
-    
-    const cbChange = (event: any) => {
-        if (event.target.checked){
-            console.log('checked',event.target.name);
-        }
-        else {
-            console.log('not',event.target.name);
-        }
-        let idx = parseInt(event.target.name);
-        if (record && record.id && record.progress && record.morse){
+    let chgTimeout: any = false;
+    const uploadChanges = () => {
+        if (record && record.id && record.progress && record.morse && record.word){
             let id: string = record?.id;
-            let pro: boolean[] = JSON.parse(record.progress);
             let mor: number[] = JSON.parse(record.morse);
-            pro[idx]=event.target.checked;
-            console.log(id);
-            let phrase = fromMorseProgress(mor,pro);
+            let pro = JSON.parse(record.progress);
+            console.log(progressChanges);
+            for (var i in progressChanges){
+                pro[i] = progressChanges[i];
+            }
+            console.log(maxmorse);
+            let phrase = fromMorseProgress(mor,pro,maxmorse,record.word);
             console.log(phrase);
             mutate({
                     resource: "streaks",
@@ -68,8 +66,8 @@ export const StreakShow: React.FC<IResourceComponentsProps> = () => {
                     id: id,
                     successNotification: (data, values, resource) => {
                         return {
-                            message: `Good Job.`,
-                            description: "!!!",
+                            message: `Progress saved.`,
+                            description: "Your progress has been saved.",
                             type: "success",
                         };
                     },
@@ -80,16 +78,31 @@ export const StreakShow: React.FC<IResourceComponentsProps> = () => {
                     },
                     onSuccess: (data, variables, context) => {
                         // Let's celebrate!
-                        handleRefresh();
+                        //handleRefresh();
+                        console.log(Date.now());
                     }
                 }
             )
         }
+    }
+    const cbChange = (event: any) => {
+        console.log(Date.now());
+        if (event.target.checked){
+            console.log('checked');
+        }
+        else {
+            console.log('not');
+        }
+        let idx = parseInt(event.target.name);
+        setProgressChanges((state: any) => {state[idx]=event.target.checked; return state;})
+        if (chgTimeout){clearTimeout(chgTimeout);}
+        chgTimeout = setTimeout(uploadChanges,2000);
         
         //createSchedule();
-        
+        return true;
     }
     const getUpcoming = () => {
+        console.log(Date.now());
         console.log(record);
         const startDate = new Date(record?.start).getTime();
         const endDate = new Date().getTime();
@@ -104,9 +117,12 @@ export const StreakShow: React.FC<IResourceComponentsProps> = () => {
         const tasks: any = JSON.parse(morseStr)[daysSinceStart];
         console.log(tasks);
         setYesterdayTasks(tasks);
+        console.log(Date.now());
     }
     
     const createSchedule = () => {
+        console.log(Date.now());
+        //setIsDeprecated(false);
         if (record && record.morse){
             const morseStr: any = record?.morse;
             const morse = JSON.parse(morseStr);
@@ -116,9 +132,16 @@ export const StreakShow: React.FC<IResourceComponentsProps> = () => {
                 progress = JSON.parse(progressStr);
             }
             console.log(morse);
+            console.log(progress);
             let startDate = new Date(record?.start);
 
-            let returnElements = [];
+            let returnElements = [<Row gutter={[0, 8]}><Text>Progress: {record.progressphrase}</Text></Row>,
+                <Row gutter={[0, 8]}><Text>Goal Phrase: {record.word}</Text></Row>,
+                <Row gutter={[0, 8]}><Text>Dot Task: {record.dot}</Text></Row>,
+                <Row gutter={[0, 8]}><Text>Dash Task: {record.dash}</Text></Row>,
+                <Row gutter={[0, 8]}><Text>Description: {record.name}</Text></Row>];
+            let previousElements = [];
+            let upcomingElements = [];
             
             if (record.type == "day"){
                 let isNext = false;
@@ -129,7 +152,7 @@ export const StreakShow: React.FC<IResourceComponentsProps> = () => {
                     for (var j=0;j<morse[i];j++){
                         
                         let str = ""+idx;
-                        cboxes.push(<Col flex="2rem"><Checkbox name={str} checked={progress[idx]} onChange={cbChange} ></Checkbox></Col>);
+                        cboxes.push(<Col flex="2rem"><Checkbox name={str} defaultChecked={progress[idx]} onChange={cbChange} ></Checkbox></Col>);
                         idx++;
                     }
                     cboxes.push(<Col flex="auto"></Col>);
@@ -140,75 +163,123 @@ export const StreakShow: React.FC<IResourceComponentsProps> = () => {
                         onoff = record.onoff.at(startDate.getDay());
                         count++;
                     }
-                    if (!isNext && startDate.getDate() >= new Date().getDate() && startDate.getMonth() >= new Date().getMonth() && startDate.getFullYear() >= new Date().getFullYear()){
+                    const sevenDate = new Date(startDate);
+                    const tDate = new Date();
+                    if (!isNext && (sevenDate > tDate || ( sevenDate.getDate() >= tDate.getDate() && sevenDate.getMonth() >= tDate.getMonth() && sevenDate.getFullYear() >= tDate.getFullYear()))){
+                   
                         returnElements.push(<Divider>Current</Divider>);
                         isNext = true;
+                        maxmorse = i+1;
                     }
-                    else if (isNext && !isUpcoming && startDate.getDate() >= new Date().getDate() && startDate.getMonth() >= new Date().getMonth() && startDate.getFullYear() >= new Date().getFullYear()){
-                        returnElements.push(<Divider>Upcoming</Divider>);
+                    else if (isNext && !isUpcoming && (sevenDate > tDate || ( sevenDate.getDate() >= tDate.getDate() && sevenDate.getMonth() >= tDate.getMonth() && sevenDate.getFullYear() >= tDate.getFullYear()))){
+                        
                         isUpcoming = true;
                     }
-                    else if (i == 0){
-                        returnElements.push(<Divider>Previous</Divider>);
-                    }
                     
-                    returnElements.push(<Row gutter={[8, 8]} className="showRow"><Col flex="16rem"><Text>{startDate.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})}</Text></Col>{cboxes}</Row>);
+                    if (!isNext && !isUpcoming){
+                        previousElements.push(<Row gutter={[8, 8]} className="showRow"><Col flex="16rem"><Text>{startDate.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})}</Text></Col>{cboxes}</Row>);
+                    }
+                    else if (isUpcoming){
+                        upcomingElements.push(<Row gutter={[8, 8]} className="showRow"><Col flex="16rem"><Text>{startDate.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})}</Text></Col>{cboxes}</Row>);
+                    }
+                    else {
+                        returnElements.push(<Row gutter={[8, 8]} className="showRow"><Col flex="16rem"><Text>{startDate.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})}</Text></Col>{cboxes}</Row>);
+                    }
                     startDate.setDate(startDate.getDate() + 1);
                 }
             }
             else if (record.type == "week"){
                 let isNext = false;
                 let isUpcoming = false;
+                let idx = 0;
                 for (var i=0;i<morse.length;i++){
                     let cboxes = [<Col flex="1rem"></Col>];
                     for (var j=0;j<morse[i];j++){
-                        cboxes.push(<Col flex="2rem"><Checkbox></Checkbox></Col>);
+                        
+                        let str = ""+idx;
+                        cboxes.push(<Col flex="2rem"><Checkbox name={str} defaultChecked={progress[idx]} onChange={cbChange} ></Checkbox></Col>);
+                        idx++;
                     }
                     cboxes.push(<Col flex="auto"></Col>);
-                    const sevenDate = new Date();
-                    sevenDate.setDate(startDate.getDate() + 6);
-                    if (!isNext && sevenDate.getDate() >= new Date().getDate() && sevenDate.getMonth() >= new Date().getMonth() && sevenDate.getFullYear() >= new Date().getFullYear()){
+                    const sevenDate = new Date(startDate);
+                    sevenDate.setDate(sevenDate.getDate() + 6);
+                    const tDate = new Date();
+                    if (!isNext && (sevenDate > tDate || ( sevenDate.getDate() >= tDate.getDate() && sevenDate.getMonth() >= tDate.getMonth() && sevenDate.getFullYear() >= tDate.getFullYear()))){
                         returnElements.push(<Divider>Current</Divider>);
                         isNext = true;
+                        maxmorse = i+1;
                     }
-                    else if (isNext && !isUpcoming && sevenDate.getDate() >= new Date().getDate() && sevenDate.getMonth() >= new Date().getMonth() && sevenDate.getFullYear() >= new Date().getFullYear()){
-                        returnElements.push(<Divider>Upcoming</Divider>);
+                    else if (isNext && !isUpcoming && (sevenDate > tDate || ( sevenDate.getDate() >= tDate.getDate() && sevenDate.getMonth() >= tDate.getMonth() && sevenDate.getFullYear() >= tDate.getFullYear()))){
+                        //returnElements.push(<Divider>Upcoming</Divider>);
                         isUpcoming = true;
                     }
-                    else if (i == 0){
-                        returnElements.push(<Divider>Previous</Divider>);
+                    
+                    let endDate = new Date(startDate);
+                    endDate.setDate(startDate.getDate() + 6);
+                    if (!isNext && !isUpcoming){
+                        previousElements.push(<Row gutter={[8, 8]} className="showRow"><Col flex="16rem"><Text>{startDate.toLocaleDateString('en-us', { month:"short", day:"numeric"})} - {endDate.toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"})}</Text></Col>{cboxes}</Row>);
                     }
-                    returnElements.push(<Row gutter={[8, 8]} className="showRow"><Col flex="16rem"><Text>{startDate.toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"})}</Text></Col>{cboxes}</Row>);
+                    else if (isUpcoming){
+                        upcomingElements.push(<Row gutter={[8, 8]} className="showRow"><Col flex="16rem"><Text>{startDate.toLocaleDateString('en-us', { month:"short", day:"numeric"})} - {endDate.toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"})}</Text></Col>{cboxes}</Row>);
+                    }
+                    else {
+                        returnElements.push(<Row gutter={[8, 8]} className="showRow"><Col flex="16rem"><Text>{startDate.toLocaleDateString('en-us', { month:"short", day:"numeric"})} - {endDate.toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"})}</Text></Col>{cboxes}</Row>);
+                    }
                     startDate.setDate(startDate.getDate() + 7);
                 }
             }
             else if (record.type == "month"){
                 let isNext = false;
                 let isUpcoming = false;
+                let idx = 0;
                 for (var i=0;i<morse.length;i++){
                     let cboxes = [<Col flex="1rem"></Col>];
                     for (var j=0;j<morse[i];j++){
-                        cboxes.push(<Col flex="2rem"><Checkbox></Checkbox></Col>);
+                        
+                        let str = ""+idx;
+                        cboxes.push(<Col flex="2rem"><Checkbox name={str} defaultChecked={progress[idx]} onChange={cbChange} ></Checkbox></Col>);
+                        idx++;
                     }
                     cboxes.push(<Col flex="auto"></Col>);
                     if (!isNext && startDate.getMonth() >= new Date().getMonth() && startDate.getFullYear() >= new Date().getFullYear()){
                         returnElements.push(<Divider>Current</Divider>);
                         isNext = true;
+                        maxmorse = i;
                     }
                     else if (isNext && !isUpcoming && startDate.getMonth() >= new Date().getMonth() && startDate.getFullYear() >= new Date().getFullYear()){
-                        returnElements.push(<Divider>Upcoming</Divider>);
+                        //returnElements.push(<Divider>Upcoming</Divider>);
                         isUpcoming = true;
                     }
                     else if (i == 0){
-                        returnElements.push(<Divider>Previous</Divider>);
+                        //returnElements.push(<Divider>Previous</Divider>);
                     }
-                    returnElements.push(<Row gutter={[8, 8]} className="showRow"><Col flex="16rem"><Text>{startDate.toLocaleDateString('en-us', { year:"numeric", month:"short"})}</Text></Col>{cboxes}</Row>);
+
+                    if (!isNext && !isUpcoming){
+                        previousElements.push(<Row gutter={[8, 8]} className="showRow"><Col flex="16rem"><Text>{startDate.toLocaleDateString('en-us', { year:"numeric", month:"short"})}</Text></Col>{cboxes}</Row>);
+                    }
+                    else if (isUpcoming){
+                        upcomingElements.push(<Row gutter={[8, 8]} className="showRow"><Col flex="16rem"><Text>{startDate.toLocaleDateString('en-us', { year:"numeric", month:"short"})}</Text></Col>{cboxes}</Row>);
+                    }
+                    else {
+                        returnElements.push(<Row gutter={[8, 8]} className="showRow"><Col flex="16rem"><Text>{startDate.toLocaleDateString('en-us', { year:"numeric", month:"short"})}</Text></Col>{cboxes}</Row>);
+                    }
                     startDate.setMonth(startDate.getMonth() + 1);
                 }
+            }
+            console.log(Date.now());
+            if (upcomingElements.length > 0){
+                returnElements.push(<Divider>Upcoming</Divider>);
+                returnElements.push(<Row className="showRowHolder">{upcomingElements}</Row>);
+            }
+            if (previousElements.length > 0){
+                returnElements.push(<Divider>Previous</Divider>);
+                previousElements.reverse();
+                returnElements.push(<Row className="showRowHolder">{previousElements}</Row>);
             }
             return returnElements;
         }
         else {
+            console.log(Date.now());
             return <Row></Row>;
         }
     }
