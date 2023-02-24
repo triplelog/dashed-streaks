@@ -50,13 +50,10 @@ export const StreakShow: React.FC<IResourceComponentsProps> = () => {
             let id: string = record?.id;
             let mor: number[] = JSON.parse(record.morse);
             let pro = JSON.parse(record.progress);
-            console.log(progressChanges);
             for (var i in progressChanges){
                 pro[i] = progressChanges[i];
             }
-            console.log(maxmorse);
             let phrase = fromMorseProgress(mor,pro,maxmorse,record.word);
-            console.log(phrase);
             mutate({
                     resource: "streaks",
                     values: {
@@ -79,20 +76,13 @@ export const StreakShow: React.FC<IResourceComponentsProps> = () => {
                     onSuccess: (data, variables, context) => {
                         // Let's celebrate!
                         //handleRefresh();
-                        console.log(Date.now());
                     }
                 }
             )
         }
     }
     const cbChange = (event: any) => {
-        console.log(Date.now());
-        if (event.target.checked){
-            console.log('checked');
-        }
-        else {
-            console.log('not');
-        }
+        
         let idx = parseInt(event.target.name);
         setProgressChanges((state: any) => {state[idx]=event.target.checked; return state;})
         if (chgTimeout){clearTimeout(chgTimeout);}
@@ -102,26 +92,17 @@ export const StreakShow: React.FC<IResourceComponentsProps> = () => {
         return true;
     }
     const getUpcoming = () => {
-        console.log(Date.now());
-        console.log(record);
         const startDate = new Date(record?.start).getTime();
         const endDate = new Date().getTime();
-        console.log(startDate);
         const timeSinceStart = endDate - startDate;
-        console.log(timeSinceStart);
         const daysSinceStart = Math.floor(timeSinceStart/24/3600/1000);
-        console.log(daysSinceStart);
         setYesterday(record?.word);
         const morseStr: string = record?.morse as string;
-        console.log(JSON.parse(morseStr));
         const tasks: any = JSON.parse(morseStr)[daysSinceStart];
-        console.log(tasks);
         setYesterdayTasks(tasks);
-        console.log(Date.now());
     }
     
     const createSchedule = () => {
-        console.log(Date.now());
         //setIsDeprecated(false);
         if (record && record.morse){
             const morseStr: any = record?.morse;
@@ -131,15 +112,14 @@ export const StreakShow: React.FC<IResourceComponentsProps> = () => {
                 const progressStr: any = record?.progress;
                 progress = JSON.parse(progressStr);
             }
-            console.log(morse);
-            console.log(progress);
             let startDate = new Date(record?.start);
 
-            let returnElements = [<Row gutter={[0, 8]}><Text>Progress: {record.progressphrase}</Text></Row>,
-                <Row gutter={[0, 8]}><Text>Goal Phrase: {record.word}</Text></Row>,
+            let returnElements = [<Row gutter={[0, 8]}><Text>Progress: <b>{record.progressphrase}</b></Text></Row>,
+                <Row gutter={[0, 8]}><Text>Goal Phrase: <b>{record.word}</b></Text></Row>,
+                <Row gutter={[0, 8]}><Text>Description: {record.name}</Text></Row>,
                 <Row gutter={[0, 8]}><Text>Dot Task: {record.dot}</Text></Row>,
-                <Row gutter={[0, 8]}><Text>Dash Task: {record.dash}</Text></Row>,
-                <Row gutter={[0, 8]}><Text>Description: {record.name}</Text></Row>];
+                <Row gutter={[0, 8]}><Text>Dash Task: {record.dash}</Text></Row>
+                ];
             let previousElements = [];
             let upcomingElements = [];
             
@@ -244,14 +224,11 @@ export const StreakShow: React.FC<IResourceComponentsProps> = () => {
                     if (!isNext && startDate.getMonth() >= new Date().getMonth() && startDate.getFullYear() >= new Date().getFullYear()){
                         returnElements.push(<Divider>Current</Divider>);
                         isNext = true;
-                        maxmorse = i;
+                        maxmorse = i+1;
                     }
                     else if (isNext && !isUpcoming && startDate.getMonth() >= new Date().getMonth() && startDate.getFullYear() >= new Date().getFullYear()){
                         //returnElements.push(<Divider>Upcoming</Divider>);
                         isUpcoming = true;
-                    }
-                    else if (i == 0){
-                        //returnElements.push(<Divider>Previous</Divider>);
                     }
 
                     if (!isNext && !isUpcoming){
@@ -266,7 +243,6 @@ export const StreakShow: React.FC<IResourceComponentsProps> = () => {
                     startDate.setMonth(startDate.getMonth() + 1);
                 }
             }
-            console.log(Date.now());
             if (upcomingElements.length > 0){
                 returnElements.push(<Divider>Upcoming</Divider>);
                 returnElements.push(<Row className="showRowHolder">{upcomingElements}</Row>);
@@ -279,7 +255,6 @@ export const StreakShow: React.FC<IResourceComponentsProps> = () => {
             return returnElements;
         }
         else {
-            console.log(Date.now());
             return <Row></Row>;
         }
     }
@@ -297,7 +272,6 @@ export const StreakShow: React.FC<IResourceComponentsProps> = () => {
                     <>
                         <ListButton />
                         <EditButton />
-                        <RefreshButton onClick={handleRefresh} />
                     </>
                 ),
             }}

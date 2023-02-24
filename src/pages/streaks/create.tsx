@@ -62,8 +62,6 @@ export const StreakCreate: React.FC<IResourceComponentsProps> = (  ) => {
             if (morse[i]==2){progress.push(false)}
             if (morse[i]>=1){progress.push(false)}
         }
-        console.log(values);
-        console.log(start);
         let onoff = "1";
         if (timeType == "day"){
             onoff = "";
@@ -92,7 +90,7 @@ export const StreakCreate: React.FC<IResourceComponentsProps> = (  ) => {
             <Form {...formProps} onFinish={(values) => handleOnFinish(values)} layout="vertical">
                 
                 <Form.Item
-                    label="Name"
+                    label="Description"
                     name="name"
                 >
                     <Input />
