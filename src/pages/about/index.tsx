@@ -94,7 +94,7 @@ export const About: React.FC = () => {
                         <Col span={24}>
                             <Title>How?</Title>
                             <div>
-                                To create a streak, you will need to set some options.
+                                To create a streak, you will need to set some options on the <a href="./streaks/create">create page</a>.
                                 <ul>
                                 <li>The description is just for you to know what your goal is.</li>
                                 <li>The phrase is what will be converted to morse code to generate the pattern. Pick the phrase that will motivate you the most. Longer phrases will generate longer streaks!</li>
@@ -107,7 +107,7 @@ export const About: React.FC = () => {
 
                             </div>
                             <div>
-                            To track your progress, click the eyeball from the list of streaks and then check the appropriate checkboxes as you complete tasks.
+                            To track your progress, click the eyeball from the <a href="./streaks">list of streaks</a> and then check the appropriate checkboxes as you complete tasks.
                             </div>
                         </Col>
                     </Row>
