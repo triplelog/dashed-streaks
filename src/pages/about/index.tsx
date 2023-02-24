@@ -18,7 +18,9 @@ import {
     EditButton,
     RefreshButton,
 } from "@pankod/refine-antd";
+import routerProvider from "@pankod/refine-react-router-v6";
 
+const { Link } = routerProvider;
 import { IStreak } from "interfaces";
 import { useState } from "react";
 
@@ -94,7 +96,7 @@ export const About: React.FC = () => {
                         <Col span={24}>
                             <Title>How?</Title>
                             <div>
-                                To create a streak, you will need to set some options on the <a href="./streaks/create">create page</a>.
+                                To create a streak, you will need to set some options on the <Link to="../streaks/create">create page</Link>.
                                 <ul>
                                 <li>The description is just for you to know what your goal is.</li>
                                 <li>The phrase is what will be converted to morse code to generate the pattern. Pick the phrase that will motivate you the most. Longer phrases will generate longer streaks!</li>
@@ -107,7 +109,7 @@ export const About: React.FC = () => {
 
                             </div>
                             <div>
-                            To track your progress, click the eyeball from the <a href="./streaks">list of streaks</a> and then check the appropriate checkboxes as you complete tasks.
+                            To track your progress, click the eyeball from the <Link to="../streaks">list of streaks</Link> and then check the appropriate checkboxes as you complete tasks.
                             </div>
                         </Col>
                     </Row>
