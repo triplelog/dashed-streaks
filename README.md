@@ -1,7 +1,7 @@
 
 ## Dashed Streaks
 
-![cover-image](https://demo.dashedstreaks.com/cover.png)
+![cover-image](https://demo.dashedstreaks.com/cover.jpg)
 
 ### Project Demo link
 
