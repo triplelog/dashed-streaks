@@ -12,16 +12,28 @@ email: demo@sharklasers.com
 password: password
 
 ## About
+Trying to keep up a streak is good motivation, but having off days/weeks/months can make it easier. I would rather work a bit harder some days and enjoy the occasional day off, so I decided to create a website that will motivate me to work regularly based off morse code patterns.
+
+Enter a word or phrase and it will be converted into morse code and that pattern determines which days you have complete 0, 1, or 2 tasks. A dot means 1 task, a dash is 2 tasks, and a pause between characters is 0 tasks.
+
+Dashed Streaks tracks your progress as you try to spell out the desired phrase and keeps you informed of the upcoming schedule.
 
 ### Description
-In this section, give a description of what your submission is. What did you build using refine. Which feautures of refine did you implement.
+
+I used Refine and Ant to interact with a Supabase backend to create a relatively simple productivity app. Refine made it easy to create custom streaks and track your progress.
+
+The project only uses one SQL table so it is simple to setup.
+
 
 ### Participants
 
-In this section, add the GitHub and Twitter profiles of everyone in your team.
+I, Robert Wilcox, created Dashed Streaks. My GitHub is https://github.com/triplelog, but I don't have many public repositories. I have bunch of little repls on my Replit profile at https://replit.com/@triplelog.
 
 ### Preview
-To provide a comprehensive understanding of the submission, add visuals such as GIFs, images and videos have been incorporated to give an impression of what it looks like.
+There aren't a ton of fancy visuals but some screenshots:
+![About page](https://demo.dashedstreaks.com/home.png)
+![List page](https://demo.dashedstreaks.com/list.png)
+![Show page](https://demo.dashedstreaks.com/show.png)
 
 
 
